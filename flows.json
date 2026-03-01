@@ -1,0 +1,494 @@
+[
+    {
+        "id": "4f51d4753e2d1e6f",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ec1607a2b7ad6b52",
+        "type": "mqtt-broker",
+        "name": "HiveMQ Public",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "home/status",
+        "willQos": "1",
+        "willRetain": "true",
+        "willPayload": "offline",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "dashboard-tab",
+        "type": "ui_tab",
+        "name": "Smart Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "dashboard-group",
+        "type": "ui_group",
+        "name": "Smart Home Monitor",
+        "tab": "dashboard-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "b35ed0c058288987",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "inject-temp",
+        "type": "inject",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Every 5s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 180,
+        "wires": [
+            [
+                "func-temp"
+            ]
+        ]
+    },
+    {
+        "id": "func-temp",
+        "type": "function",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Temperature Publisher",
+        "func": "var temp = (20 + Math.random() * 10).toFixed(1);\nvar humidity = (40 + Math.random() * 30).toFixed(1);\nmsg.payload = JSON.stringify({\n    sensor: \"temp_01\",\n    temperature: parseFloat(temp),\n    humidity: parseFloat(humidity),\n    unit: \"celsius\",\n    timestamp: new Date().toISOString()\n});\nmsg.topic = \"home_Suriya/livingroom/temperature\";\nmsg.qos = 1;\nmsg.retain = false;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "mqtt-pub-temp"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-pub-temp",
+        "type": "mqtt out",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Publish Temp",
+        "topic": "home_Suriya/livingroom/temperature",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "ec1607a2b7ad6b52",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "inject-motion",
+        "type": "inject",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Every 7s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "7",
+        "once": true,
+        "onceDelay": 0.5,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "func-motion"
+            ]
+        ]
+    },
+    {
+        "id": "func-motion",
+        "type": "function",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Motion Publisher",
+        "func": "var states = [\"detected\", \"clear\", \"clear\", \"detected\", \"clear\"];\nvar state = states[Math.floor(Math.random() * states.length)];\nmsg.payload = JSON.stringify({\n    sensor: \"motion_01\",\n    status: state,\n    room: \"hallway\",\n    timestamp: new Date().toISOString()\n});\nmsg.topic = \"home_Suriya/hallway/motion\";\nmsg.qos = 2;\nmsg.retain = false;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 280,
+        "wires": [
+            [
+                "mqtt-pub-motion"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-pub-motion",
+        "type": "mqtt out",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Publish Motion",
+        "topic": "home/hallway/motion",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "ec1607a2b7ad6b52",
+        "x": 650,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "inject-status",
+        "type": "inject",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Status Online",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "30",
+        "once": true,
+        "onceDelay": 0.2,
+        "payload": "online",
+        "payloadType": "str",
+        "x": 200,
+        "y": 380,
+        "wires": [
+            [
+                "mqtt-pub-status"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-pub-status",
+        "type": "mqtt out",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Status Publisher",
+        "topic": "home_yourname/status",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "ec1607a2b7ad6b52",
+        "x": 650,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "mqtt-sub-wildcard",
+        "type": "mqtt in",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Wildcard Subscriber home_Suriya/#",
+        "topic": "home_Suriya/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ec1607a2b7ad6b52",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 220,
+        "y": 530,
+        "wires": [
+            [
+                "func-parse"
+            ]
+        ]
+    },
+    {
+        "id": "func-parse",
+        "type": "function",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Parse & Route",
+        "func": "var data;\ntry { data = JSON.parse(msg.payload); } catch (e) { data = msg.payload; }\n\nnode.warn(\"TOPIC: \" + msg.topic + \" | DATA: \" + JSON.stringify(data));\n\nvar out1 = null, out2 = null, out3 = null;\n\nif (msg.topic.includes(\"temperature\")) {\n    out1 = { payload: data.temperature || 0, topic: msg.topic };\n} else if (msg.topic.includes(\"motion\")) {\n    out2 = { payload: data.status === \"detected\" ? 1 : 0, topic: msg.topic };\n}\n\nif (msg.topic.startsWith(\"home_Suriya/\")) {\n    out3 = {\n        payload: \"[\" + msg.topic + \"] \" + JSON.stringify(data),\n        topic: \"home_Suriya/status\"\n    };\n}\n\nreturn [out1, out2, out3];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 530,
+        "wires": [
+            [
+                "ui-gauge-temp",
+                "ui-chart-temp"
+            ],
+            [
+                "func-motion-text"
+            ],
+            [
+                "ui-log",
+                "debug-all"
+            ]
+        ]
+    },
+    {
+        "id": "func-motion-text",
+        "type": "function",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Motion to Text",
+        "func": "if (msg.payload === 1) {\n    msg.payload = \"🔴 Motion DETECTED\";\n} else {\n    msg.payload = \"🟢 Area Clear\";\n}\nreturn msg;",
+        "outputs": 1,
+        "x": 670,
+        "y": 580,
+        "wires": [
+            [
+                "ui-text-motion"
+            ]
+        ]
+    },
+    {
+        "id": "ui-gauge-temp",
+        "type": "ui_gauge",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Temperature Gauge",
+        "group": "dashboard-group",
+        "order": 1,
+        "width": 6,
+        "height": 4,
+        "gtype": "gage",
+        "title": "Living Room Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "35",
+        "diff": false,
+        "className": "",
+        "x": 700,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "ui-chart-temp",
+        "type": "ui_chart",
+        "z": "4f51d4753e2d1e6f",
+        "name": "Temperature Chart",
+        "group": "dashboard-group",
+        "order": 2,
+        "width": 12,
+        "height": 5,
+        "label": "Temperature Over Time",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting for data...",
+        "dot": false,
+        "ymin": "15",
+        "ymax": "35",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "colors": [
+            "#1f77b4"
+        ],
+        "outputs": 1,
+        "x": 700,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui-text-motion",
+        "type": "ui_text",
+        "z": "4f51d4753e2d1e6f",
+        "group": "dashboard-group",
+        "order": 3,
+        "width": 6,
+        "height": 2,
+        "name": "Motion Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 870,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "ui-log",
+        "type": "ui_text",
+        "z": "4f51d4753e2d1e6f",
+        "group": "dashboard-group",
+        "order": 4,
+        "width": 12,
+        "height": 3,
+        "name": "Message Log",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 670,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "debug-all",
+        "type": "debug",
+        "z": "4f51d4753e2d1e6f",
+        "name": "All Messages",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 670,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "102a8aee62955d88",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
